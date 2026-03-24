@@ -1,0 +1,18 @@
+services:
+  mysql:
+    image: mysql:8.4
+    restart: unless-stopped
+    # Prisma does not support sha256_password; use mysql_native_password for new users.
+    command: --default-authentication-plugin=mysql_native_password
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: bpr_ledger
+      MYSQL_USER: bpr
+      MYSQL_PASSWORD: bpr_secret
+    ports:
+      - "3306:3306"
+    volumes:
+      - bpr_mysql_data:/var/lib/mysql
+
+volumes:
+  bpr_mysql_data:
