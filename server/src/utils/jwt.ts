@@ -1,0 +1,17 @@
+import jwt from "jsonwebtoken";
+import { config } from "../config";
+import type { UserRole } from "@prisma/client";
+
+export type JwtPayload = {
+  sub: string;
+  role: UserRole;
+  email: string;
+};
+
+export function signToken(payload: JwtPayload): string {
+  return jwt.sign(payload, config.jwtSecret, { expiresIn: "24h" });
+}
+
+export function verifyToken(token: string): JwtPayload {
+  return jwt.verify(token, config.jwtSecret) as JwtPayload;
+}
