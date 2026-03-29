@@ -34,6 +34,14 @@ function authBypassEnabled(): boolean {
   return import.meta.env.VITE_BYPASS_AUTH === "true";
 }
 
+function clearBypassRemnantsIfNeeded(): void {
+  if (authBypassEnabled()) return;
+  if (localStorage.getItem("token") === BYPASS_TOKEN) {
+    localStorage.removeItem("token");
+    localStorage.removeItem("user");
+  }
+}
+
 function loadStoredUser(): User | null {
   try {
     const raw = localStorage.getItem("user");
@@ -46,11 +54,13 @@ function loadStoredUser(): User | null {
 
 function initialUser(): User | null {
   if (authBypassEnabled()) return MOCK_USER;
+  clearBypassRemnantsIfNeeded();
   return loadStoredUser();
 }
 
 function initialToken(): string | null {
   if (authBypassEnabled()) return BYPASS_TOKEN;
+  clearBypassRemnantsIfNeeded();
   return localStorage.getItem("token");
 }
 
